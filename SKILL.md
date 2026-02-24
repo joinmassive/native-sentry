@@ -12,7 +12,8 @@ Read production errors and issues from Sentry.
 ## Setup
 
 ```bash
-echo "TOKEN=${SENTRY_AUTH_TOKEN:-MISSING}"
+# Check token is set (does not print the value)
+[ -n "$SENTRY_AUTH_TOKEN" ] && echo "SENTRY_AUTH_TOKEN: set" || echo "SENTRY_AUTH_TOKEN: MISSING"
 echo "ORG=${SENTRY_ORG:-not set}"
 echo "PROJECT=${SENTRY_PROJECT:-not set}"
 ```
@@ -93,10 +94,11 @@ python3 "$SENTRY_API" list-issues \
 | `--limit` | `20` | Max results (max 50) |
 | `--query` | | Sentry search query |
 | `--base-url` | `https://sentry.io` | For self-hosted Sentry |
-| `--no-redact` | | Disable PII redaction |
+| `--no-redact` | | Disable PII redaction — **avoid in shared/logged environments** |
 
 ## Notes
 
 - PII (emails, IPs) is redacted by default
-- Stack traces are excluded from event detail by default — add `--include-entries` to see them
+- Stack traces are excluded from event detail by default — add `--include-entries` only when you need them and trust the environment
+- `--no-redact` disables PII redaction — avoid in shared or logged environments
 - For self-hosted Sentry, set `SENTRY_BASE_URL` or use `--base-url`
